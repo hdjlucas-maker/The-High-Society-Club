@@ -1,70 +1,229 @@
-# The High Society Club — pacote de scripts
+<div align="center">
 
-Este pacote foi preparado a partir do lugar [club da alta sociedade.rbxl](./club%20da%20alta%20sociedade.rbxl). Ele reúne scripts de servidor, interface de cliente e construtores de ambiente/veículo para formar a base do jogo, preservando os objetos existentes do Workspace. O escopo planejado de scripts está implementado; IDs de monetização, tarefas externas de publicação e validação no Studio continuam pendentes.
+# ✨ THE HIGH SOCIETY CLUB
 
-Consulte [docs/PROGRESS.md](./docs/PROGRESS.md) para acompanhar as tarefas do Master Prompt v2, [docs/FINAL_REPORT.md](./docs/FINAL_REPORT.md) para o relatório final e os passos de publicação, [docs/AUDIT.md](./docs/AUDIT.md) para a auditoria do código-fonte, [docs/OWNER_TASKS.md](./docs/OWNER_TASKS.md) para ações que dependem do proprietário e [docs/MONETIZATION.md](./docs/MONETIZATION.md) para criar/configurar os produtos Roblox.
+### Seu mundo. Seu estilo. Sua conquista.
 
-**Os scripts planejados estão concluídos, mas o pacote não foi validado nem está pronto para publicação. Não o sincronize no jogo principal nem considere pronto para jogar.** A etapa de gameplay no Studio fica para o proprietário, após configurar os produtos e em uma cópia do lugar. Consulte o checklist para separar código presente de configuração externa e validação futura.
+**Uma experiência social de luxo no Roblox, com cidade explorável, imóveis, veículos, moda, profissões, eventos e economia própria.**
 
-O mercado entre jogadores já está implementado para itens de moda, presentes e doações de créditos dentro da mesma sessão; vendas descontam comissão de 5% do vendedor, enquanto presentes/doações não têm tarifa. Conceitos de cenário com temas/layouts predefinidos passam por aprovação do criador/admin e são montados como maquetes físicas de catálogo na Galeria. Game Pass VIP e pacotes de créditos estão integrados, mas dependem dos IDs que o proprietário deve cadastrar no Roblox. Não há validação de gameplay nem de compras no Studio.
+[![Plataforma](https://img.shields.io/badge/PLATAFORMA-Roblox-111111?style=for-the-badge&logo=roblox&logoColor=white)](https://www.roblox.com/)
+[![Linguagem](https://img.shields.io/badge/LINGUAGEM-Luau-00A2FF?style=for-the-badge)](https://luau.org/)
+[![Pipeline](https://img.shields.io/badge/PIPELINE-Rojo-8A2BE2?style=for-the-badge)](https://rojo.space/)
+[![Status](https://img.shields.io/badge/STATUS-Em%20desenvolvimento-orange?style=for-the-badge)](#-status-do-projeto)
 
-## O que a auditoria encontrou
+</div>
 
-- O lugar tem uma baseplate e pontos de teste, não a cidade prevista no conceito.
-- Há três plataformas identificadas como propriedades, mas não há mansões, hotel, shopping, praia ou marina construídos.
-- O modelo `ServerStorage.VehicleModels.SocietySedan` contém somente uma Part (`Body`); ainda não é um carro dirigível.
-- Existem dois `GarageClient` com nomes de remotes diferentes. Um usa `RequestVehicleSpawn`; o outro usa `RequestSpawnVehicle`.
-- O pacote substitui os clientes antigos por uma interface única `GameClient`, que desativa as cópias antigas em `PlayerScripts` durante a sessão.
-- A `ShopGui` antiga não tem lógica de compra. A interface nova a oculta no PlayerGui para evitar duas interfaces visíveis.
-- A lógica antiga de spawn apontava para caminhos de modelo diferentes. O pacote preserva `SocietySedan` e cria um novo modelo em `ServerStorage > VehicleModels > SocietySedanPlayable`.
-- `WorldBuilder` acrescenta bairros, avenida, shopping, hotel, parque, clube, residências e marina sob `Workspace.HighSocietyWorld`. Ele não move nem apaga objetos já existentes e não recria a cidade se a pasta gerada já existir.
-- `DayNightService` sincroniza um ciclo global de 24 minutos com transições suaves de manhã, tarde, entardecer e noite; o horário e a fase aparecem na interface. Os efeitos próprios ficam identificados em `Lighting` e não removem os efeitos existentes.
-- `EventService` organiza encontros com horários do mundo na praça do clube, no Garden Park, na Fashion Avenue e na marina. Jogadores podem convidar pessoas da mesma sessão; os convites expiram em 60 segundos, podem ser aceitos ou recusados e, ao aceitar, mostram o marcador sem teleportar nem iniciar presença automaticamente. A interface informa abertura, tempo aproximado até o próximo horário, participantes ativos e pontos disponíveis. A presença exige ficar no local por 60 segundos dentro do horário, é validada pelo servidor e concede pontos diários persistentes sem criar comunicação privada. O concurso de moda permite uma inscrição e um voto diário, sem voto próprio, e informa empate; o placar é por servidor.
-- `VehicleBuilder` mantém o modelo antigo intacto e cria três carros dirigíveis em `ServerStorage.VehicleModels`: Society Sedan, Royal Sport e Grand Tourer. Compartilham a base física, mas diferem em cor, escala e velocidade máxima das rodas, ajustadas e aplicadas no servidor; a interface identifica o perfil de desempenho. O catálogo também inclui a motocicleta Society Roadster, com rodas articuladas, tração traseira e estabilização/direção controladas pelo servidor, exibida na Automotive Gallery e comprável, retirável e armazenável pela garagem. O proprietário pode escolher entre seis pinturas predefinidas na garagem; nos carros e na motocicleta, a cor fica salva por veículo e é aplicada na próxima retirada. A alteração exige posse do veículo, proximidade da garagem e veículo guardado.
-- A Royal Marina exibe e oferece a Society Speedboat, comprável e armazenável nos píeres. A lancha usa propulsão e direção por forças controladas pelo servidor, flutuação assistida somente sobre a superfície d'água identificada e o mesmo limite de um veículo ativo por jogador. Sua retirada e guarda exigem proximidade dos pontos da marina; lancha e motocicleta não podem ser usadas para validar o percurso de chauffeur. Carros usam quatro rodas motorizadas; os controles aceitam apenas o motorista proprietário e param quando a entrada expira.
-- A Automotive Gallery exibe as três variantes de carro e a Society Roadster sem marcas registradas. O ponto da concessionária abre o catálogo para escolha; o servidor valida proximidade e saldo antes da compra.
-- A garagem cria pontos de compra, retirada e armazenamento na cidade se ainda não existirem, sem substituir pontos antigos. É possível escolher qual carro retirar ou guardar; o servidor valida a proximidade, verifica espaço livre para evitar spawn sobre construções ou jogadores e mantém no máximo um veículo ativo por jogador.
-- `WorkService` oferece dez percursos: guia turístico, chauffeur, fotógrafo virtual, DJ, animador de eventos, empresário virtual, designer de moda, organizador de eventos, proprietário de estabelecimento e criador de mundos. Os dois últimos são atividades de planejamento e apresentação por percurso; não concedem propriedade nem permissões administrativas sobre estabelecimentos ou mapas. O chauffeur exige um veículo próprio ativo; o servidor contabiliza a distância percorrida ao volante e não paga a rota se ela for feita a pé. Todas as profissões validam deslocamento plausível, distância, duração e destino; é possível abandonar sem receber créditos. Conclusões contam por profissão e persistem em cinco patentes (Aprendiz, Profissional, Especialista, Elite e Lenda), exibidas com o progresso até a próxima promoção. Cada promoção aumenta em 5% a remuneração-base daquela profissão, até 20%, calculada e concedida pelo servidor. Os pontos de início e entrega são acrescentados também a cidades geradas anteriormente sem reconstruir o mundo. Com a aba Trabalho aberta, a interface atualiza o progresso da rota e marca o ponto de entrega no mundo.
-- Os três imóveis gerados têm interiores básicos. Ao visitar um imóvel possuído, o servidor cria uma cópia temporária separada para aquele jogador, remove os pontos de compra da cópia e a destrói ao sair, morrer ou desconectar. A entrada exige propriedade e a saída valida o ponto da instância.
-- O proprietário pode alternar entre estilos de interior Clássico, Oceano e Jardim e escolher conjuntos visuais Jardim interno, Galeria ou Lounge na própria instância. Mobiliário decorativo e paletas são predefinidos, validados pelo servidor e persistidos por imóvel; as mudanças só funcionam dentro do próprio interior e não alteram residências de outros jogadores. Visitantes não podem modificar a decoração.
-- O proprietário pode convidar jogadores online pela aba Imóveis enquanto estiver dentro de sua residência. Os convites expiram em 60 segundos, aceitam até quatro visitantes, são cancelados quando o proprietário sai ou desconecta e levam o visitante à instância privada do anfitrião. Ao sair, morrer ou desconectar o anfitrião, os convidados retornam à cidade; entrada, capacidade e respostas são verificadas pelo servidor. Os interiores continuam separados por proprietário e não criam comunicação privada.
-- Compras de imóveis exigem proximidade do ponto de consulta no imóvel; propriedades antigas com `Base` são aceitas como ponto físico sem remover os objetos existentes.
-- A loja registra posse e o Inventário permite equipar/desequipar. `AppearanceService` cria versões geométricas básicas da jaqueta, relógio, óculos e tênis no avatar; elas não são roupas/assets finais do catálogo Roblox.
-- A Fashion Avenue possui um ponto físico de atendimento; compras de itens são recusadas no servidor se o jogador estiver longe da loja.
-- O Extrato mostra as 20 movimentações mais recentes do perfil, com ganhos, recompensas e compras.
-- A aba Jogadores abre as ferramentas oficiais do Roblox para denunciar ou bloquear; o jogo não cria mensagens privadas nem substitui a moderação da plataforma.
-- O botão FOTO enquadra o avatar em modo selfie e devolve a câmera ao estado anterior ao sair. CAPTURAR usa o `CaptureService`; o Álbum mantém as 20 capturas recentes da sessão e permite solicitar o salvamento individual na galeria do Roblox, sem enviar imagens para um servidor ou perfil do jogo.
-- O Grand Society Club tem uma cabine de DJ com três estilos de show de luzes; o controle exige completar a rota da profissão e estar junto ao palco. A reprodução em loop usa somente um ID Roblox de áudio próprio/autorizado configurado em `Config.Club.MusicSoundId`; sem ele, o show visual funciona sem áudio.
-- `AchievementService` registra conquistas de profissões e primeiras compras no mesmo perfil persistente; pontos de reputação são informativos e não podem ser definidos pelo cliente.
-- Eventos entregam pontos próprios (não moeda) uma vez por evento a cada dia UTC, após presença contínua validada no local.
-- A aba Diária oferece um resgate por dia UTC: 100 Society Credits iniciais, +25 por dia consecutivo e teto de 300. O dia, a sequência e a recompensa são definidos no servidor, persistidos junto do perfil e registrados no extrato; o cliente não envia o valor.
-- O DataStore bloqueia o perfil por sessão de jogador, atualiza o bloqueio durante os salvamentos e libera-o quando o jogador sai. Em falha temporária de acesso no Studio, usa um perfil explicitamente não persistente; perfis temporários nunca são salvos.
-- As transações do servidor ficam no histórico persistente e também geram linhas de auditoria no Output do servidor com UserId, tipo, valor e referência do item/atividade.
-- `AdminService` verifica o criador individual, o proprietário do grupo ou IDs autorizados em configuração e oferece apenas expulsão confirmada da sessão atual; não executa banimento permanente nem substitui as ferramentas de moderação do Roblox. Tentativas e resultados de expulsão são registrados no Output do servidor; o painel autorizado consulta os 20 últimos de um buffer volátil de até 50 por servidor, sem persistência entre sessões.
-- As consultas server-side de leitura têm cooldown independente de 0,5 s por endpoint; ações de escrita usam limites próprios e validam saldo, posse, presença ou proximidade no servidor.
-- `RequestReward` não concede créditos neste pacote. Uma recompensa solicitável livremente pelo cliente permitiria inflação da economia.
-- `PlayerData` é apenas um TODO no lugar atual; ele não é necessário neste pacote.
+---
 
-## Importação com Rojo
+## 🌆 Sobre o projeto
 
-1. Faça uma cópia de segurança do lugar no Roblox Studio. Não sincronize sobre o único arquivo.
-2. Instale o Rojo CLI e o plugin oficial Rojo no Studio.
-3. Abra no Studio a cópia do lugar que deseja atualizar.
-4. No terminal, nesta pasta, execute `rojo serve default.project.json`.
-5. No Studio, abra o plugin Rojo e conecte-o ao servidor local.
-6. Revise a árvore exibida: o projeto mapeia `ServerScriptService.HSC`, `StarterPlayer.StarterPlayerScripts.HSC`, `ReplicatedStorage.HSC` e `StarterGui.HSC`. O mapa existente em `Workspace` não é substituído; `WorldBuilder` acrescenta a cidade gerada durante a execução.
-7. Sincronize. Confirme `ServerScriptService.HSC.Bootstrap`, os 22 ModuleScripts em `ServerScriptService.HSC.Modules`, os 5 módulos compartilhados em `ReplicatedStorage.HSC` (`Config`, `Logger`, `FashionCatalog`, `PropertyCatalog`, `VehicleCatalog`) e `StarterPlayer.StarterPlayerScripts.HSC.GameClient`.
+**The High Society Club (HSC)** é um jogo social para Roblox concebido em torno de uma cidade sofisticada, onde os jogadores podem construir sua identidade, explorar diferentes distritos, adquirir propriedades e veículos, participar da vida social e desenvolver atividades profissionais.
 
-O Rojo sincroniza os arquivos-fonte; ele não publica o jogo. Não use `rojo build` para substituir o lugar inteiro: isso não incluiria o mapa existente.
+A proposta combina exploração urbana, personalização, experiências sociais e progressão econômica. O jogador não fica limitado a visitar um cenário: pode circular por diferentes regiões, frequentar estabelecimentos, participar de eventos, trabalhar, negociar itens e construir sua trajetória dentro da comunidade.
 
-## Requisitos para testar
+O projeto utiliza uma arquitetura modular em **Luau**, com lógica importante executada e validada no servidor. O código-fonte é organizado para desenvolvimento e sincronização com **Rojo**.
 
-- Para testar persistência real no Studio, publique o jogo de teste e habilite **Game Settings > Security > Enable Studio Access to API Services**.
-- Se o DataStore falhar no Studio, o sistema avisa no Output e usa um perfil temporário. Compras e créditos desse perfil desaparecem ao sair; esse perfil nunca sobrescreve os dados persistentes.
-- Em servidor publicado, falhas de carregamento ou perfil ativo em outro servidor impedem a entrada para proteger os dados existentes.
+## 💎 O que o jogo reúne
 
-## Verificação integrada (para depois da preparação)
+| Área | Experiências e sistemas |
+|---|---|
+| 🏙️ **Cidade e exploração** | Distritos, regiões identificadas, estabelecimentos, áreas de lazer, clube, parque, ilha e marina. |
+| 🏡 **Imóveis** | Catálogo de propriedades, compra, propriedade persistente, interiores privados, decoração e convites para visitantes. |
+| 🚘 **Veículos** | Catálogo, compra, garagem, spawn controlado, armazenamento, personalização de pintura e test drive temporário. |
+| 👗 **Moda e aparência** | Inventário, roupas e acessórios por categoria, equipagem, restauração da aparência e poses para avatares R6/R15. |
+| 📸 **Fotografia** | Modo foto/selfie e álbum local de capturas, sem envio das imagens ao servidor do jogo. |
+| 💼 **Profissões** | Dez carreiras com rotas, atividades, progressão por patentes e pagamento após conclusão validada. |
+| 🎉 **Vida social** | Eventos, convites, presença, desfile de moda, votação e cabine de DJ com efeitos de iluminação. |
+| 🛍️ **Economia e lojas** | Society Credits, recompensas diárias, lojas, inventário e histórico de transações. |
+| 🤝 **Mercado entre jogadores** | Anúncios de itens de moda, presentes e doações de créditos dentro da mesma sessão, com validações e limites. |
+| 🏗️ **Criação moderada** | Editor limitado a temas e composições de catálogo, com fila de revisão e aprovação autorizada. |
+| 🛡️ **Segurança** | Validação no servidor, limites de requisições, verificações de propriedade/saldo/proximidade e ferramentas oficiais de denúncia e bloqueio do Roblox. |
 
-Não execute a rodada de teste ainda. Quando a preparação estiver concluída, verifique em uma cópia do lugar: inicialização e `leaderstats`; ciclo de iluminação; recompensa diária resgatável uma vez por dia UTC, progressão consecutiva e persistência; compra validada perto da Fashion Avenue e item no inventário; recusa de compra duplicada; equipar/desequipar e persistência dos visuais; denúncias/bloqueios pelos menus Roblox e acesso administrativo somente ao criador; atualização e persistência de conquistas; participação em evento no local e limite diário de pontos, além de envio, aceitação, recusa, expiração e cancelamento de convites de evento; spawn apenas de veículo possuído e próximo à garagem/marina, armazenamento nos pontos correspondentes, estabilidade, direção e pintura da motocicleta, flutuação e controles da lancha e bloqueio de veículo ativo duplicado; persistência e bloqueio de sessão do DataStore; visita e compra somente nos pontos físicos de imóveis; convite, expiração, recusa, limite de visitantes, isolamento de decoração e retorno à cidade ao encerrar visita; trabalhos sem recompensa antes do tempo mínimo, sem percorrer a rota ou fora do destino; construção de cidade sem objetos flutuantes; direção, parada e frenagem dos veículos.
+## 🧭 Regiões e pontos de interesse
 
-O mapa, interiores, acessórios básicos e veículo são construídos com peças por scripts para evitar dependência de assets de terceiros. O resultado é uma base jogável, não uma cidade final detalhada. A direção do sedan usa motores nas rodas e controles de diferencial; requer validação de física no Studio antes de ser considerado pronto.
+A estrutura do mundo contempla áreas como:
+
+- **High Society Boulevard** — eixo urbano e comercial.
+- **Grand Society Club** — clube e espaço de entretenimento.
+- **Millionaire District** — área residencial de alto padrão.
+- **Garden Park** — parque e área de convivência.
+- **Paradise Island** — região de lazer e exploração.
+- **Royal Marina** — marina e atividades relacionadas a veículos aquáticos.
+
+> A composição final, acessibilidade, sinalização, colisões e acabamento visual do mapa ainda precisam ser conferidos na experiência aberta pelo Roblox Studio.
+
+## 👔 Profissões e progressão
+
+O projeto contempla dez atividades profissionais:
+
+1. Chauffeur
+2. Guia turístico
+3. DJ
+4. Animador de eventos
+5. Empresário
+6. Proprietário de estabelecimento
+7. Designer de roupas
+8. Criador de mundos
+9. Fotógrafo virtual
+10. Organizador de eventos
+
+Cada profissão possui fluxo de início e conclusão, requisitos de deslocamento ou atividade e progressão por cinco patentes: **Aprendiz, Profissional, Especialista, Elite e Lenda**.
+
+Os pagamentos são processados após a conclusão validada pelo servidor. Abandonar uma atividade não deve conceder a recompensa.
+
+## 💰 Economia e monetização
+
+A moeda interna do projeto é o **Society Credits**.
+
+O código contempla:
+
+- Recompensas diárias e progressão econômica.
+- Compras em lojas, imóveis e veículos.
+- Histórico de transações.
+- Mercado entre jogadores, com comissão configurada para vendas de itens.
+- Game Pass cosmético **Society VIP**.
+- Developer Products de **1.000**, **5.000** e **20.000 Society Credits**.
+
+**Importante:** os IDs de Game Pass e Developer Products permanecem configurados como `0`. Portanto, a monetização ainda depende da criação dos produtos no painel do Roblox, do cadastro dos IDs em `src/shared/Config.lua` e de testes em uma experiência publicada. Os produtos e compras não devem ser considerados ativos neste estado do projeto.
+
+## 🧱 Arquitetura e tecnologias
+
+- **Plataforma:** Roblox
+- **Linguagem:** Luau
+- **Sincronização e estruturação:** Rojo
+- **Lógica de servidor:** `ServerScriptService`
+- **Módulos compartilhados:** `ReplicatedStorage`
+- **Cliente:** `StarterPlayerScripts`
+- **Interface:** construída em runtime pelo script do cliente
+- **Persistência:** DataStoreService, com serviços de dados e economia
+- **Comunicação cliente-servidor:** RemoteEvents e RemoteFunctions criados pelo Bootstrap
+
+### Estrutura do repositório
+
+```text
+The High Society Club/
+├── assets/
+├── docs/
+│   ├── AUDIT.md
+│   ├── DECISIONS.md
+│   ├── FINAL_REPORT.md
+│   ├── MONETIZATION.md
+│   ├── TESTING.md
+│   └── WORLD_QUALITY_PLAN.md
+├── src/
+│   ├── client/
+│   │   └── GameClient.client.lua
+│   ├── gui/
+│   ├── server/
+│   │   ├── Bootstrap.server.lua
+│   │   └── Modules/
+│   └── shared/
+│       ├── Config.lua
+│       ├── FashionCatalog.lua
+│       ├── Logger.lua
+│       ├── PropertyCatalog.lua
+│       └── VehicleCatalog.lua
+├── .gitignore
+├── default.project.json
+├── README.md
+└── The High Society Club - Atualizado para teste.rbxlx
+```
+
+### Principais módulos de servidor
+
+A arquitetura separa responsabilidades em serviços especializados, incluindo:
+
+`DataService` · `EconomyService` · `ShopService` · `PropertyService` · `VehicleService` · `AppearanceService` · `EventService` · `FashionContestService` · `ClubService` · `PlayerMarketService` · `CreationService` · `MonetizationService` · `AdminService` · `WorldBuilder` · `WorldLife`.
+
+## 🛠️ Como abrir e desenvolver
+
+### Requisitos
+
+- Roblox Studio.
+- Rojo compatível com a versão do plugin instalado no Roblox Studio.
+- Git (opcional, para controle de versão).
+- Uma cópia de segurança da experiência antes de sincronizar alterações.
+
+### Sincronização com Rojo
+
+Na pasta raiz do projeto, execute:
+
+```bash
+rojo serve default.project.json
+```
+
+No Roblox Studio:
+
+1. Abra uma **cópia de teste** da experiência.
+2. Conecte o plugin Rojo ao servidor iniciado.
+3. Confira a árvore de objetos antes de sincronizar.
+4. Verifique o painel **Output** durante a inicialização.
+5. Confirme que os serviços e módulos foram carregados sem erros.
+
+Para gerar um arquivo de build, quando o Rojo estiver instalado:
+
+```bash
+rojo build default.project.json -o build.rbxlx
+```
+
+**Atenção:** Rojo sincroniza os arquivos definidos no projeto para o Studio; ele não substitui um backup do lugar completo nem exporta automaticamente o Workspace de volta para o repositório. Não sincronize diretamente sobre a experiência principal sem validar primeiro em uma cópia.
+
+## 🧪 Status do projeto
+
+O desenvolvimento dos sistemas previstos até a etapa 11.1 está representado no código e na documentação. Isso não significa que todos os recursos tenham sido validados em uma sessão real de jogo.
+
+| Etapa | Situação |
+|---|---|
+| Arquitetura modular e configuração Rojo | Implementada no código |
+| Sistemas de economia, dados e lojas | Implementados no código; teste real pendente |
+| Veículos, imóveis, moda e profissões | Implementados no código; teste real pendente |
+| Eventos, mercado, criações e segurança | Implementados no código; teste real pendente |
+| Integração de monetização | Código preparado; IDs externos ainda não configurados |
+| Qualidade final do mapa e experiência visual | Revisão e ajustes pendentes |
+| Testes multiplayer, DataStore e dispositivos | Pendentes no Roblox Studio |
+| Publicação comercial | Não concluída |
+
+**Transparência:** compilação ou auditoria estática não comprovam funcionamento dentro do Roblox. Os testes de gameplay, persistência real, multiplayer, desempenho e compras precisam ser executados em uma experiência de teste publicada. Consulte `docs/TESTING.md`, `docs/FINAL_REPORT.md` e `docs/OWNER_TASKS.md`.
+
+## 📚 Documentação
+
+A pasta [`docs/`](./docs/) reúne o histórico técnico e os próximos passos:
+
+- [`CHECKLIST-PROJETO.md`](./CHECKLIST-PROJETO.md) — visão geral do que está implementado e do que falta.
+- [`PROGRESS.md`](./PROGRESS.md) — acompanhamento do desenvolvimento.
+- [`docs/AUDIT_2026-11-04.md`](./docs/AUDIT_2026-11-04.md) — auditoria técnica do projeto.
+- [`docs/WORLD_QUALITY_PLAN.md`](./docs/WORLD_QUALITY_PLAN.md) — diagnóstico e plano de qualidade do mundo.
+- [`docs/TESTING.md`](./docs/TESTING.md) — roteiro de testes no Roblox Studio.
+- [`docs/MONETIZATION.md`](./docs/MONETIZATION.md) — configuração dos produtos de monetização.
+- [`docs/OWNER_TASKS.md`](./docs/OWNER_TASKS.md) — ações que dependem do proprietário.
+- [`docs/FINAL_REPORT.md`](./docs/FINAL_REPORT.md) — relatório e preparação para publicação.
+
+## 🔐 Segurança e configuração
+
+- Arquivos `.env` e `.env.local` não devem ser enviados ao GitHub.
+- Não publique tokens, senhas, cookies, chaves privadas ou credenciais.
+- Mantenha IDs de produtos e configurações específicas nos locais apropriados.
+- A lógica de transações e permissões deve continuar validada no servidor.
+- Teste mudanças em uma cópia da experiência antes de atualizar a versão principal.
+
+## 🗺️ Próximos marcos
+
+- [ ] Corrigir e validar spawn, colisões, escadas, acessibilidade e circulação do mapa.
+- [ ] Revisar sinalização, vegetação, mobiliário e identidade visual dos distritos.
+- [ ] Executar a Onda 1 de testes no Roblox Studio e registrar evidências.
+- [ ] Validar DataStores, multiplayer, segurança e desempenho.
+- [ ] Criar e configurar Game Pass e Developer Products.
+- [ ] Finalizar ícone, thumbnails, descrição e página da experiência.
+- [ ] Publicar somente após aprovação dos testes.
+
+---
+
+<div align="center">
+
+**THE HIGH SOCIETY CLUB**
+
+*Seu mundo. Seu estilo. Sua conquista.*
+
+Desenvolvido por **[@hdjlucas-maker](https://github.com/hdjlucas-maker)**
+
+</div>
