@@ -1,0 +1,45 @@
+{
+  "name": "The High Society Club",
+  "tree": {
+    "$className": "DataModel",
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "HSC": {
+        "$className": "Folder",
+        "Bootstrap": {
+          "$path": "src/server/Bootstrap.server.lua"
+        },
+        "Modules": {
+          "$className": "Folder",
+          "$path": "src/server/Modules"
+        }
+      }
+    },
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "HSC": {
+        "$className": "Folder",
+        "$path": "src/shared"
+      }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "HSC": {
+          "$className": "Folder",
+          "GameClient": {
+            "$path": "src/client/GameClient.client.lua"
+          }
+        }
+      }
+    },
+    "StarterGui": {
+      "$className": "StarterGui",
+      "HSC": {
+        "$className": "Folder",
+        "$path": "src/gui"
+      }
+    }
+  }
+}

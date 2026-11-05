@@ -1,0 +1,15 @@
+# Credenciais
+.env
+.env.local
+.env.*.local
+
+# Backups e arquivos temporários
+backups/
+output/
+*.bak
+*.tmp
+*~
+
+# Sistema
+.DS_Store
+Thumbs.db
