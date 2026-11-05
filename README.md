@@ -152,15 +152,19 @@ A pasta [`docs/`](./docs/) reúne o histórico técnico e os próximos passos:
 - [`docs/MONETIZATION.md`](./docs/MONETIZATION.md) — configuração dos produtos de monetização.
 - [`docs/OWNER_TASKS.md`](./docs/OWNER_TASKS.md) — ações que dependem do proprietário.
 - [`docs/FINAL_REPORT.md`](./docs/FINAL_REPORT.md) — relatório e preparação para publicação.
-- ## 🌆 Conheça o mundo
+## 🌆 Conheça o mundo
 
-![Cidade](assets/cidade.jpeg)
+### Cidade
+![Cidade](assets/Cidade.jpeg)
 
-![Shopping](assets/shopping.jpeg)
+### Shopping
+![Shopping](assets/Shopping.jpeg)
 
-![Mansões](assets/mansoes.jpeg)
+### Mansões
+![Mansões](assets/Mans%C3%A3o.jpeg)
 
-![Gameplay](assets/gameplay.jpeg)
+### Gameplay
+![Gameplay](assets/Gameplay.jpeg)
 
 🔐 Segurança e configuração
 - Arquivos .env e .env.local não devem ser enviados ao GitHub.
